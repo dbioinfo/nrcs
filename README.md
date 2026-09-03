@@ -19,7 +19,10 @@ flowchart TD
 ```
 
 
-The data comes from a large range of arid climates, providing insight on microclimates, lichen demographics and substrate specificity. 
+The data comes from a large range of arid climates, providing insight on microclimates, lichen demographics and substrate specificity in the American Southwest.
 
 ![samples](figs/AI_site_map_category_cropped.png)
+
+
+![relbiomass](figs/RelativeBiomass.png)
 
