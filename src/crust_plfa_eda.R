@@ -235,10 +235,10 @@ tmp <- data %>%
 g5 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=value, fill=Biocrust_Type_Coarse),alpha=0.8)+
   geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=value, shape=Substrate, color=Substrate), 
-              height=0, width=0.1, size=2)+
+              height=0, width=0.2, size=2,stroke=1)+
   scale_fill_manual(values=c(crust_pal_coarse))+
-  scale_color_manual(values = c("#9E74B5", '#CF6D5B'))+
-  scale_shape_manual(values=c(15,17))+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   facet_wrap(~variable, nrow=1, scales='free')+
   theme_bw()+
   theme(axis.text.x=element_blank(), axis.ticks.x = element_blank())+
@@ -259,10 +259,10 @@ tmp <- data %>%
 g6 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=value, fill=Biocrust_Type_Coarse),alpha=0.8)+
   geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=value,shape=Substrate, color=Substrate), 
-              height=0, width=0.1, alpha=0.8)+
+              height=0, width=0.2, alpha=0.7, stroke=1)+
   scale_fill_manual(values=crust_pal_coarse)+
-  scale_color_manual(values = c("#9E74B5", '#CF6D5B'))+
-  scale_shape_manual(values=c(15,17))+
+  scale_color_manual(values = c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   facet_wrap(~variable, nrow=1, scales='free')+
   theme_bw()+
   theme(axis.text.x=element_blank(), axis.ticks.x = element_blank())+
@@ -317,7 +317,6 @@ tmp <- data %>% #coarse
 
 g8 <- ggplot(tmp)+
   geom_bar(mapping=aes(x=Biocrust_Type_Coarse, y=percent, fill=variable), stat='identity',width=.9)+
-  scale_x_discrete(expand = c(.1,.1))+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_manual(values = c("#F88299","#F8E082","#D0AC80","#949494"))+
   theme_bw()+
@@ -340,15 +339,13 @@ tmp <- data %>%
 
 g9 <- ggplot(tmp)+
   geom_bar(mapping=aes(x=Desert, y=value, fill=variable), stat='identity',width=.9)+
-  scale_x_discrete(expand = c(.15,.15))+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_manual(values = c("#F88299","#F8E082","#D0AC80","#949494"))+
   facet_wrap(~Substrate, nrow=1, scales='free')+
   theme_bw()+
   theme(axis.text.x=element_text(angle=30, vjust=.45),
         axis.ticks = element_blank(),
-        legend.title = element_blank(),
-        panel.grid = element_blank())+
+        legend.title = element_blank())+
   ylab("Median Total Biomass ng/g")+
   xlab("Desert")+
   ggtitle("Median Total Biomass Per Desert and Substrate")
@@ -373,8 +370,7 @@ tmp <- data %>% #coarse
   mutate(variable=factor(variable, levels=c("Protists","Bacteria","Fungi","Undifferentiated")))
 
 g10 <- ggplot(tmp)+
-  geom_bar(mapping=aes(x=Desert, y=percent, fill=variable), stat='identity',width=.7)+
-  scale_x_discrete(expand = c(.15,.15))+
+  geom_bar(mapping=aes(x=Desert, y=percent, fill=variable), stat='identity',width=.9)+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_manual(values = c("#F88299","#F8E082","#D0AC80","#949494"))+
   facet_wrap(~Substrate, scales='free')+
@@ -404,7 +400,7 @@ g11 <- ggplot(tmp)+
   theme_bw()+
   theme(axis.text.x=element_text(angle=30, vjust=.45),
         axis.ticks = element_blank(),
-        legend.title = element_blank(),panel.grid = element_blank())+
+        legend.title = element_blank())+
   ylab("Median Total Biomass ng/g")+
   xlab("Desert")+
   ggtitle("Median Total Biomass Per Desert")
@@ -452,14 +448,13 @@ tmp <- data %>%
   summarize(value=median(value, na.rm = T))
 
 g13 <- ggplot(tmp)+
-  geom_bar(mapping=aes(x=Substrate, y=value, fill=variable), stat='identity', width=0.8)+
-  scale_x_discrete(expand = c(.25,.25))+
+  geom_bar(mapping=aes(x=Substrate, y=value, fill=variable), stat='identity', width=0.9)+
   scale_y_continuous(expand = c(0,0))+
   scale_fill_manual(values = c("#F88299","#F8E082","#D0AC80","#949494"))+
   theme_bw()+
   theme(axis.text.x=element_text(angle=30, vjust=.45),
         axis.ticks = element_blank(),
-        legend.title = element_blank(), panel.grid = element_blank())+
+        legend.title = element_blank())+
   ylab("Median Total Biomass ng/g")+
   xlab("Substrate")+
   ggtitle("Median Total Biomass Per Substrate")
@@ -789,8 +784,11 @@ tmp <- data %>%  #fine
 
 g23 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=percent, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent), height=0, width=0.1, shape=2, alpha=0.5)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent, color=Substrate, shape=Substrate), 
+              height=0, width=0.25, alpha=0.7,stroke=1)+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   facet_grid(variable~Desert, scales='free')+
   theme_bw()+
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
@@ -801,8 +799,11 @@ g23
 
 g24 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=percent, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent), height=0, width=0.1, shape=2, alpha=0.5)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent, color=Substrate, shape=Substrate), 
+              height=0, width=0.2, alpha=0.5, stroke=1)+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   facet_grid(variable~Substrate, scales = 'free')+
   theme_bw()+
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
@@ -812,8 +813,11 @@ g24
 
 g25 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=percent, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent), height=0, width=0.1, shape=2, alpha=0.5)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse,y=percent, color=Substrate, shape=Substrate), 
+              height=0, width=0.2, alpha=0.5, stroke=1)+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   facet_grid(variable~Desert+Substrate, scales='free')+
   theme_bw()+
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())+
@@ -822,7 +826,6 @@ g25 <- ggplot(tmp)+
 g25
 
 ## mean F/B & Shannon per metavar
-
 tmp <- data %>% 
   select(SampleNumber,
          Shannon_Diversity, Fungi_to_Bacteria_Ratio) %>% 
@@ -834,9 +837,12 @@ tmp <- data %>%
 
 g26 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=value, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value), height = 0, width=0.1, alpha=0.5, shape=2)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value, color=Substrate, shape=Substrate), 
+              height = 0, width=0.2, alpha=0.5, stroke=1)+
   facet_grid(variable~Desert, scales='free')+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   scale_y_continuous(expand=c(0,0))+
   theme_bw()+
   theme(axis.text.x = element_blank(), 
@@ -849,9 +855,12 @@ g26
 
 g27 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=value, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value), height = 0, width=0.1, alpha=0.5, shape=2)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value, color=Substrate, shape=Substrate), 
+              height = 0, width=0.2, alpha=0.7, stroke=1)+
   facet_grid(variable~Substrate, scales='free')+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   scale_y_continuous(expand=c(0,0))+
   theme_bw()+
   theme(axis.text.x = element_blank(), 
@@ -863,9 +872,12 @@ g27
 
 g28 <- ggplot(tmp)+
   geom_violin(mapping=aes(x=Biocrust_Type_Coarse, y=value, fill=Biocrust_Type_Coarse))+
-  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value), height = 0, width=0.1, alpha=0.5, shape=2)+
+  geom_jitter(mapping=aes(x=Biocrust_Type_Coarse, y=value, color=Substrate, shape=Substrate), 
+              height = 0, width=0.2, alpha=0.7, stroke=1)+  
   facet_grid(variable~Desert+Substrate, scales='free')+
   scale_fill_manual(values=crust_pal_coarse, name="Coarse Biocrust Type")+
+  scale_color_manual(values =  c('#7397EF',"#AE8A14"))+
+  scale_shape_manual(values=c(0,1))+
   scale_y_continuous(expand=c(0,0))+
   theme_bw()+
   theme(axis.text.x = element_blank(), 
