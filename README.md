@@ -37,7 +37,7 @@ The product is a report of the dimension-reduced features and their relative imp
 flowchart TD
     A([surface_hit_frequency_summary.csv]) --> B[field_data_exploration.R]
     C([col_names_refined.csv]) --> B
-    B --> D[field_data.nmds.pdf]
+    B --> D([field_data.nmds.pdf])
 ```
 
 
