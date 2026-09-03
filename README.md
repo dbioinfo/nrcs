@@ -26,3 +26,20 @@ The data comes from a large range of arid climates, providing insight on microcl
 
 ![relbiomass](figs/RelativeBiomass.png)
 
+
+There is also a subroutine that's still in progress `field_data_exploration.R` that serves as an entry point for further analyses by performing NMDS on a large matrix of environmental variables measured at each site. 
+
+It takes two inputs, the full data matrix `surface_hit_frequency_summary.csv` and a selection of columns to subset the matrix by `col_names_refined2.csv`.
+
+The product is a report of the dimension-reduced features and their relative importances within the dataset. 
+
+```mermaid
+flowchart TD
+    A([surface_hit_frequency_summary.csv]) --> B[field_data_exploration.R]
+    C([col_names_refined.csv]) --> B
+    B --> D[field_data.nmds.pdf]
+```
+
+
+![alttext](figs/field_data.nmds.fine.png)
+
