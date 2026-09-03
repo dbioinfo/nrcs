@@ -17,3 +17,9 @@ flowchart TD
     G([PLFAData/*]) --> H[nrcs_plfa_wranglin.R]
     H --> A
 ```
+
+
+The data comes from a large range of arid climates, providing insight on microclimates, lichen demographics and substrate specificity. 
+
+![samples](figs/AI_site_map_category_cropped.png)
+
