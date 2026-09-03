@@ -46,3 +46,22 @@ flowchart TD
 
 ![alttext](figs/field_data.nmds.fine.png)
 
+
+### Aridity Index Map
+
+There is also a subroutine for plotting the aridity index against the geographic locations of samples `AI_map_rev.R`.
+
+It takes two inputs `meta_MM.csv` and optionally `GypWorld.kml` files which need to be manually toggled on and off. The software will download the public dataset it uses to calculate Aridity if it does not find it in the working directory with the correct filename. 
+
+
+
+```mermaid 
+
+flowchart TD
+    A([meta_MM.csv]) --> B[AI_map_rev.R]
+    C{GypWorld.kml} --> B
+    B --> D([AI_site_map.png])
+```
+
+
+ 
