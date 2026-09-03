@@ -64,4 +64,5 @@ flowchart TD
 ```
 
 
+![samples](figs/AI_site_map.png)
  
