@@ -3,11 +3,11 @@ library(readxl)
 
 setwd('~/WorkForaging/Academia/Nicole/nrcs/')
 
-#data <- read_xlsx('data/Biological_Results_Master_QCed.xlsx')
+#read inputs 
 tdat <- read_csv("data/PLFA_merged.csv")
 meta <- read_xlsx('data/MetaData_PLFA_MM.xlsx') %>% rename("SampleID"="Sample ID 2")
 
-#make columns a bit more readable down the line
+#make data a bit more readable down the line
 data <- tdat %>% select(SampleID,
                         "Total Microbial Biomass" = "Total.Living.Microbial.Biomass.ng.g",
                         "Protists Biomass" = "Protozoan.ng.g",
@@ -39,30 +39,5 @@ data <- tdat %>% select(SampleID,
   pivot_wider(id_cols = SampleID, names_from = "variable", values_from = "value")  %>% 
   left_join(., meta, by="SampleID")
 
-
+#write to file
 write_csv(data, 'data/cleaned_crust_data.csv')
-
-
-
-#### old select with premade biological results master QC
-'data <- tdat %>% select(SampleNumber, 
-                        "Total Microbial Biomass","Protists Biomass","Percent Protists",
-                        "Fungi to Bacteria Ratio","Undifferentiated Biomass",
-                        "Percent Undifferentiated",
-                        "Other Gram Pos Biomass",
-                        "Percent Other Gram Pos",
-                        "Saprophytes Biomass",
-                        "Percent Saprophytes",
-                        "Arbuscular Mycorrhizal Fungal Biomass"="Arbuscular Mycorrhizal Fungal  Biomass",
-                        "Percent Arbuscular Mycorrhizal Fungi",
-                        "Total Fungal Biomass",
-                        "Percent Fungal Biomass",
-                        "Rhizobia Biomass",
-                        "Percent Rhizobia",
-                        "Other Gram Neg Biomass",
-                        "Percent Other Gram Neg",
-                        "Actinobacteria Biomass",
-                        "Percent Actinobacteria",
-                        "Total Bacteria Biomass",
-                        "Percent Bacteria",
-                        "Shannon Diversity") %>% '

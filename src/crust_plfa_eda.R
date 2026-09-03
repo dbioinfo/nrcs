@@ -888,7 +888,7 @@ g28 <- ggplot(tmp)+
 g28
 
 
-#put it all together
+#put it all together in a report pdf
 library(patchwork)
 pdf("figs/plfa_eda.v1.1.pdf", width=11, height=11)
 

@@ -3,8 +3,7 @@ library(tidyverse)
 setwd('~/WorkForaging/Academia/Nicole/nrcs/')
 
 
-#many disjoint datasets, each needs handling
-
+#define directory path where .csv files live
 plfa_dir <- "data/PLFAData/"
 fs <- list.files(plfa_dir)
 
@@ -42,7 +41,7 @@ colnames(tdat) <- c("Sample.Type","Customer.No",
 
 
 #remove problematic samples with no data (Total.Living.Microbial.Biomass.ng.g==1)
-#across all columns with "<0.01", change that value to 0 to help with computation
+#across all columns with "<0.01", change that value to 0 to help with downstream computation
 charcols <- c("Gram.neg.ng.g", "Gram.pos.ng.g" ,"Gram.posneg.ratio.ng.g","Predator.Prey.ng.g","Rhizobia.ng.g",
               "Saprophytes.ng.g", "Cyclo.19.0.ng.g","PolyUnsaturated.ng.g","Cyclo.17.0.ng.g",
               "Pre.18.1w7c.cy19.0.ng.g", "Pre.18.1.w7c.ng.g", "Pre.16.1w7c.cy17.0.ng.g", "Pre.16.1.w7c.ng.g",
@@ -52,6 +51,8 @@ idat <- tdat %>%
   mutate(SampleNumber=row_number()) %>% 
   mutate(across(all_of(charcols), ~if_else(str_detect(.x,"<"), 0, as.numeric(.x) )))
 
+
+#write to file
 write_csv(idat, "data/PLFA_merged.csv")
 
 
