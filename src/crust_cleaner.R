@@ -5,7 +5,7 @@ setwd('~/WorkForaging/Academia/Nicole/nrcs/')
 
 #read inputs 
 tdat <- read_csv("data/PLFA_merged.csv")
-meta <- read_xlsx('data/MetaData_PLFA_MM.xlsx') %>% rename("SampleID"="Sample ID 2")
+meta <- read_xlsx('data/20260904_MetaData_PLFA.xlsx') %>% rename("SampleID"="Sample ID 2")
 
 #make data a bit more readable down the line
 data <- tdat %>% select(SampleID,
