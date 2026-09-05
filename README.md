@@ -14,14 +14,13 @@ The `PLFAData` directory is full of CSVs from a third party who measured various
 
 ```mermaid
 flowchart TD
-    A([PLFA_merged.csv]) --> B[crust_cleaner.R]
-    C([MetaData_PLFA_MM.xlsx]) --> B
-    B --> D([cleaned_crust_data.csv])
+    G([PLFAData/*]) --> H[nrcs_plfa_wranglin.R]
+    C([MetaData_PLFA_MM.xlsx]) --> H
+    H --> A([PLFA_merged.csv]) 
+    H --> D([cleaned_crust_data.csv])
     D --> E[crust_plfa_eda.R]
     C --> E
     E --> F([plfa_eda.pdf])
-    G([PLFAData/*]) --> H[nrcs_plfa_wranglin.R]
-    H --> A
 ```
 
 

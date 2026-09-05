@@ -5,12 +5,11 @@ setwd('~/WorkForaging/Academia/Nicole/nrcs/')
 
 ### Import data
 meta <- read_xlsx('data/20260904_MetaData_PLFA.xlsx') %>%
-  rename("SampleID"="Sample ID 2") %>% 
+  rename("SampleID"="Crust_Nr") %>% 
   mutate(SampleID=as.character(SampleID), 
          Biocrust_Type_Coarse=factor(Biocrust_Type_Coarse, levels=c("Light Cyanobacteria Crust","Dark Cyanobacteria Crust",
                                                                     "Cyanolichen Crust","Chlorolichen Crust","Moss Crust"))) 
-empty_samps <- c("49", "70", "71", "74")
-data <- read_csv('data/cleaned_crust_data.csv') %>%  #run src/crust_cleaner.R first
+data <- read_csv('data/cleaned_crust_data.csv') %>%  #run src/nrcs_plfa_wranglin.R first
   filter((SampleID %in% meta$SampleID))
 
 ### Color palettes
