@@ -1,4 +1,5 @@
 library(tidyverse)
+library(vegan)
 library(readxl)
 
 setwd('~/WorkForaging/Academia/Nicole/nrcs/')
@@ -155,7 +156,6 @@ g2a
 
 
 #Panel C
-library(vegan)
 mat <- data %>% select(Protists_Biomass, Undifferentiated_Biomass,
                        Saprophytes_Biomass,Arbuscular_Mycorrhizal_Fungal_Biomass,
                        Actinobacteria_Biomass,Other_Gram_Neg_Biomass,Other_Gram_Pos_Biomass, Rhizobia_Biomass) %>% 
@@ -166,7 +166,8 @@ mat <- data %>% select(Protists_Biomass, Undifferentiated_Biomass,
 rownames(mat) <- as.character(data$SampleID)
 
 mat <- mat %>% 
-  filter(rowSums(across(everything()), na.rm = TRUE) > 0) 
+  filter(rowSums(across(everything()), na.rm = TRUE) > 0) %>% 
+  mutate(across(everything(), function(x){scale(x) + 3}))
 
 X <- vegdist(mat, method='bray', na.rm = T)
 out <- metaMDS(X,
@@ -186,7 +187,7 @@ centroids <- gdat %>% group_by(Biocrust_Type_Coarse) %>% summarize(MDS1 = mean(M
 g3 <- ggplot(gdat)+
   geom_point(mapping=aes(x=MDS1,y=MDS2, fill=Biocrust_Type_Coarse), shape=21, stroke=0.2, size=2)+
   stat_ellipse(aes(x=MDS1, y=MDS2, group=Biocrust_Type_Coarse, color=Biocrust_Type_Coarse))+
-  geom_point(data=centroids, aes(x=MDS1, y=MDS2, color=Biocrust_Type_Coarse), size=6, alpha=0.8, shape=4, stroke=2)+
+  geom_point(data=centroids, aes(x=MDS1, y=MDS2, color=Biocrust_Type_Coarse), size=6, alpha=1, shape=4, stroke=2)+
   scale_color_manual(values=crust_pal_coarse)+
   scale_fill_manual(values=crust_pal_coarse)+
   theme_bw()+
@@ -194,6 +195,45 @@ g3 <- ggplot(gdat)+
   ggtitle("PLFA NMDS")
 g3
 
+desert_pal <- c("#A479A5", "#7CB1C0","#EE953C")
+#Desert
+centroids <- gdat %>% group_by(Desert) %>% summarize(MDS1 = mean(MDS1),MDS2 = mean(MDS2))
+g3a <- ggplot(gdat)+
+  geom_point(mapping=aes(x=MDS1,y=MDS2, fill=Desert), shape=21, stroke=0.2, size=2)+
+  stat_ellipse(aes(x=MDS1, y=MDS2, group=Desert, color=Desert))+
+  geom_point(data=centroids, aes(x=MDS1, y=MDS2, color=Desert), size=6, alpha=1, shape=4, stroke=2)+
+  scale_color_manual(values=desert_pal)+
+  scale_fill_manual(values=desert_pal)+
+  theme_bw()+
+  labs(fill="Desert", color="Desert")+
+  ggtitle("PLFA NMDS")
+g3a
+
+#color by biocrust, desert, substrate
+substrate_pal <- c('#7397EF',"#AE8A14")
+centroids <- gdat %>% group_by(Substrate) %>% summarize(MDS1 = mean(MDS1),MDS2 = mean(MDS2))
+g3b <- ggplot(gdat)+
+  geom_point(mapping=aes(x=MDS1,y=MDS2, fill=Substrate), shape=21, stroke=0.2, size=2)+
+  stat_ellipse(aes(x=MDS1, y=MDS2, group=Substrate, color=Substrate))+
+  geom_point(data=centroids, aes(x=MDS1, y=MDS2, color=Substrate), size=6, alpha=1, shape=4, stroke=2)+
+  scale_color_manual(values=substrate_pal)+
+  scale_fill_manual(values=substrate_pal)+
+  theme_bw()+
+  labs(fill="Substrate", color="Substrate")+
+  ggtitle("PLFA NMDS")
+g3b
+
+centroids <- gdat %>% group_by(Biocrust_Type_Coarse) %>% summarize(MDS3 = mean(MDS3),MDS2 = mean(MDS2))
+g3c <- ggplot(gdat)+
+  geom_point(mapping=aes(x=MDS3,y=MDS2, fill=Biocrust_Type_Coarse), shape=21, stroke=0.2, size=2)+
+  stat_ellipse(aes(x=MDS3, y=MDS2, group=Biocrust_Type_Coarse, color=Biocrust_Type_Coarse))+
+  geom_point(data=centroids, aes(x=MDS3, y=MDS2, color=Biocrust_Type_Coarse), size=6, alpha=1, shape=4, stroke=2)+
+  scale_color_manual(values=crust_pal_coarse)+
+  scale_fill_manual(values=crust_pal_coarse)+
+  theme_bw()+
+  labs(fill="Coarse Biocrust Type", color="Coarse Biocrust Type")+
+  ggtitle("PLFA NMDS")
+g3c
 
 #Panel D
 tmp <- data %>% 
@@ -897,8 +937,10 @@ pdf("figs/plfa_eda.v1.2.pdf", width=11, height=11)
 (g1a) /
   (g2a)
 
-(g3) /
-  (g4)
+(g3 | g3b) / 
+  (g3c | g3a) 
+
+(g4)
 
 (g5) /
   (g6)

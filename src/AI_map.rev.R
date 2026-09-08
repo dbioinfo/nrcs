@@ -5,17 +5,25 @@ library(tigris)
 library(terra)
 library(ggspatial)
 library(sf)
+library(ggnewscale)
+library(sbtools)
 
-setwd('~/WorkForaging/Academia/Nicole/random/')
+setwd('~/WorkForaging/Academia/Nicole/nrcs/')
 
 #optional download files
 if (!file.exists('data/ppt.nc')) {
   download.file(url = 'http://thredds.northwestknowledge.net:8080/thredds/fileServer/TERRACLIMATE_ALL/data/TerraClimate_ppt_2023.nc',
                 destfile = 'data/ppt.nc')
 }
-if (!file.exists('data//pet.nc')) {
+if (!file.exists('data/pet.nc')) {
   download.file(url = 'http://thredds.northwestknowledge.net:8080/thredds/fileServer/TERRACLIMATE_ALL/data/TerraClimate_pet_2019.nc',
                 destfile = 'data/pet.nc')
+}
+if (!file.exists('data/USGS_SGMC_Shapefiles.zip')){
+  id_sgmc <- '5888bf4fe4b05ccb964bab9d'
+  item_file_download(sb_id = id_sgmc, names = "USGS_SGMC_Shapefiles.zip", destinations = "data/USGS_SGMC_Shapefiles.zip" )
+  item_file_download(sb_id = id_sgmc, names = "USGS_SGMC_Tables_CSV.zip", destinations = "data/USGS_SGMC_Tables_CSV.zip" )
+  
 }
 
 
@@ -26,6 +34,9 @@ ppt <- stack(x = 'data/ppt.nc')
 # Read Evapotranspiration
 pet <- stack(x = 'data/pet.nc')
 
+# Read geology
+lith <- st_read("data/USGS_SGMC_Tables_Shapefiles/SGMC_Geology.shp")
+ltab <- read_csv("data/USGS_SGMC_Tables_CSV/SGMC_Lithology.csv")
 
 
 # Read metadata
@@ -60,11 +71,22 @@ aridity_index <- overlay(x = ppt_mean, # Raster object 1
 aridity_index_matrix <- rasterToPoints(aridity_index)
 
 
-# Read gyp kml files
-gyp1 <- st_read('data/GypWorld_1.kml')
-gyp1 <- st_transform(gyp1, crs = st_crs(aridity_index))
-gyp2 <- st_read('data/GypWorld_2.kml')
-gyp2 <- st_transform(gyp2, crs = st_crs(aridity_index))
+# prepare gypsum and granite layers
+igyp <- ltab %>% filter(LITH4=="Gypsum") %>% pull(UNIT_LINK)
+igran <- ltab %>% filter(LITH4=="Granite") %>% pull(UNIT_LINK)
+
+lith_gyp <- lith %>% filter(UNIT_LINK %in% igyp) %>% mutate(Substrate="Gypsum")
+lith_gran <- lith %>% filter(UNIT_LINK %in% igran) %>% mutate(Substrate="Granite")
+
+ilith <- rbind(lith_gran, lith_gyp)
+ilith <-  st_crop(x=ilith, y=c(xmin = -125, xmax =-109, 
+                                     ymin =  31, ymax = 39))
+
+#gypworld kml
+gyp1 <- st_read("data/GypWorld_1.kml")
+gyp2 <- st_read("data/GypWorld_2.kml")
+
+gypworld <- rbind(gyp1, gyp2)
 
 #--- Convert to the matrix to a dataframe ---#
 aridity_index_df <- as.data.frame(aridity_index_matrix)
@@ -92,6 +114,7 @@ num_colors <- 10000 #how many discrete levels #5
 palette <- colorRampPalette(c("#84332E","#F8AF82","beige","#93CC3E","#006400"))(num_colors)
 palette <- colorRampPalette(c("#84332E","#F8AF82","beige","#93CC3E"))(num_colors)
 palette <- c("#FF2429","#FF933F","#FED15D","#FCFFB3","#C0C0C0")
+substrate_pal <- c('#7397EF',"#AE8A14")
 
 ##add in AI cats 
 #regions are categorized as hyperarid (P/ET < 0.05), arid (between 0.05 and 0.20), 
@@ -131,8 +154,8 @@ p <- ggplot() +
   geom_sf(data = ka_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
   geom_sf(data = wy_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
   geom_sf(data = ne_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
-  geom_sf(data = gyp1, aes(), alpha=0, color="#8D24FF", linewidth=0.8)+
-  geom_sf(data = gyp2, aes(), alpha=0, color="#8D24FF", linewidth=0.8)+
+  geom_sf(data = lith_gyp, aes(), alpha=.8, color="#AE8A14", linewidth=0.2)+
+  geom_sf(data = lith_gran, aes(), alpha=.8, color='#7397EF', linewidth=0.2)+
   coord_sf(ylim = c(31, 41.5),
            xlim = c(-124.5, -97))
 p
@@ -191,10 +214,13 @@ p <- ggplot() +
   geom_sf(data = ka_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
   geom_sf(data = wy_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
   geom_sf(data = ne_geom, aes(), alpha = 0, colour = "black", linewidth = 0.6) +
-  geom_sf(data = gyp1, aes(), alpha=0, color="#8D24FF", linewidth=0.6)+
-  geom_sf(data = gyp2, aes(), alpha=0, color="#8D24FF", linewidth=0.6)+
-  coord_sf(ylim = c(31, 41.5),
-           xlim = c(-124.5, -109))+
+  geom_sf(data = gyp1, aes(), alpha=0, color="purple", linewidth=0.6)+
+  geom_sf(data = gyp2, aes(), alpha=0, color="purple", linewidth=0.6)+
+  new_scale_fill()+
+  geom_sf(data = ilith, aes(fill=Substrate), alpha=.8, color="grey25", linewidth=0.03)+
+  scale_fill_manual(values = c("#1B378D","#2FBA21"))+
+  coord_sf(ylim = c(31, 39),
+           xlim = c(-123, -109))+
   ggspatial::annotation_scale(
     location = "bl",
     #plot_unit="km",
@@ -212,6 +238,12 @@ p <- ggplot() +
   geom_point(data=meta, aes(x=long, y=lat, shape=parent_mat), size=4, stroke=1.2) +
   scale_shape_manual(values=c(3,4,8))+
   guides(fill=guide_legend(order=1),
-         shape=guide_legend(order=2))
+         shape=guide_legend(order=3))
 p
-ggsave("figs/AI_site_map_category_cropped.png", p)
+ggsave("figs/AI_site_map_category_cropped.substrate.png", p,dpi=500)
+
+
+
+#export granite and gypsum as kml
+#export AI index as kml
+st_write(ilith, "data/lith_sw_crop.kml", driver = "KML", )
